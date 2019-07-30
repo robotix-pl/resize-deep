@@ -11,16 +11,7 @@ in-extra?: make op! function [
 	face [object!]
 	return: [logic!]
 ] [
-	any [
-		all [
-			object? face/extra
-			in face/extra field
-		]
-		all [
-			block? face/extra
-			find face/extra field
-		]
-	]
+	find face/extra field
 ]
 
 set 'resize-deep function [parent [object!]] [
@@ -63,7 +54,7 @@ set 'resize-deep function [parent [object!]] [
 					append/only expand-y-sum current-block-y
 					current-block-y: copy []
 				] [
-					fixed: fixed + to pair! reduce [0 child/size/y]
+					fixed: fixed + as-pair 0 child/size/y
 				]
 			]
 			if find horiz-aligns child-align [
@@ -72,15 +63,15 @@ set 'resize-deep function [parent [object!]] [
 					append/only expand-x-sum current-block-x
 					current-block-x: copy []
 				] [
-					fixed: fixed + to pair! reduce [child/size/x 0]
+					fixed: fixed + as-pair child/size/x 0
 				]
 			]
 		] [
 			if find vert-aligns child-align [
-				fixed: fixed + to pair! reduce [0 child/size/y]
+				fixed: fixed + as-pair 0 child/size/y
 			]
 			if find horiz-aligns child-align [
-				fixed: fixed + to pair! reduce [child/size/x 0]
+				fixed: fixed + as-pair child/size/x 0
 			]
 		]
 	]
