@@ -8,7 +8,7 @@ Red [
 
 view/flags [
 
-	on-resize [
+	on-resizing [
 		resize-deep face
 	]
 
