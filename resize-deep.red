@@ -1,7 +1,7 @@
 Red [
 	File: %resize-deep.red
 	Author: "loziniak"
-	License: "CC BY"
+	License: "MIT License"
 ]
 
 context [
