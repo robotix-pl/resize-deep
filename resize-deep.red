@@ -47,7 +47,11 @@ set 'resize-deep function [parent [object!]] [
 	current-block-x: copy []
 	current-block-y: copy []
 	foreach child parent/pane [
-		child-align: child/options/vid-align
+		child-align: either block? child/options [
+			child/options/vid-align
+		] [
+			none
+		]
 		append current-block-x child
 		append current-block-y child
 
