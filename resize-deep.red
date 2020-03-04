@@ -43,6 +43,7 @@ set 'resize-deep function [parent [object!]] [
 		fixed: fixed + parent/extra/fixed
 	]
 
+	resized: copy []
 	current-block-x: copy []
 	current-block-y: copy []
 	foreach child parent/pane [
@@ -54,23 +55,36 @@ set 'resize-deep function [parent [object!]] [
 			child-expand-x: find  to block! child/extra/expand  'horizontal
 			child-expand-y: find  to block! child/extra/expand  'vertical
 
+			resized?: no
 			if find vert-aligns child-align [
-				if child-expand-x [append expand-x child]
+				if child-expand-x [
+					append expand-x child
+					resized?: yes
+				]
 				either child-expand-y [
 					append/only expand-y-sum current-block-y
+					resized?: yes
 					current-block-y: copy []
 				] [
 					fixed: fixed + as-pair 0 child/size/y
 				]
 			]
 			if find horiz-aligns child-align [
-				if child-expand-y [append expand-y child]
+				if child-expand-y [
+					append expand-y child
+					resized?: yes
+				]
 				either child-expand-x [
 					append/only expand-x-sum current-block-x
+					resized?: yes
 					current-block-x: copy []
 				] [
 					fixed: fixed + as-pair child/size/x 0
 				]
+			]
+
+			if resized? [
+				append resized child
 			]
 		] [
 			if find vert-aligns child-align [
@@ -133,7 +147,7 @@ set 'resize-deep function [parent [object!]] [
 
 	;-- recurency
 
-	foreach child parent/pane [
+	foreach child resized [
 		resize-deep child
 	]
 
