@@ -12,14 +12,20 @@ view/flags [
 		resize-deep face
 	]
 
+	on-resize [
+		resize-deep face
+	]
+
 	origin 10x10
 	space 15x15
 
 	below
 
-	button "test" extra [
+	button "test0" extra [
 		expand: ['horizontal 'vertical]
 	]
+
+	button "test1"
 
 	button "test2" extra context [
 		expand: 'horizontal
@@ -46,7 +52,7 @@ view/flags [
 		self/extra: reduce [
 			to set-word! 'fixed
 				(2 * 10x10) ; 2x origin
-				+ ((3 - 1) * 0x15) ; 3x space
+				+ ((4 - 1) * 0x15) ; 4x space
 		]
 	]
 
