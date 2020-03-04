@@ -11,7 +11,13 @@ in-extra?: make op! function [
 	face [object!]
 	return: [logic!]
 ] [
-	find face/extra field
+	to logic!
+		switch/default  to word! type? face/extra [
+			object! [in face/extra field]
+			block! [find face/extra field]
+		] [
+			false
+		]
 ]
 
 set 'resize-deep function [parent [object!]] [
