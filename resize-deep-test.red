@@ -48,6 +48,13 @@ view/flags [
 		]
 	]
 
+	at 0x0 base "I'm DETACHED banner. Click to close." yellow extra [
+		expand: ['detached 'horizontal 'vertical]
+	] on-down [
+		remove find face/parent/pane face
+		face/parent: none
+	]
+
 	do [
 		self/extra: reduce [
 			to set-word! 'fixed

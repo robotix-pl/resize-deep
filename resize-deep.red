@@ -38,6 +38,10 @@ set 'resize-deep function [parent [object!]] [
 	expand-y: copy []
 	expand-x-sum: copy []
 	expand-y-sum: copy []
+	detached: copy reduce [
+		'vertical copy []
+		'horizontal copy []
+	]
 
 	if 'fixed in-extra? parent [
 		fixed: fixed + parent/extra/fixed
@@ -52,38 +56,51 @@ set 'resize-deep function [parent [object!]] [
 		] [
 			none
 		]
-		append current-block-x child
-		append current-block-y child
 
 		either 'expand in-extra? child [
+			child-detached: find  to block! child/extra/expand  'detached
 			child-expand-x: find  to block! child/extra/expand  'horizontal
 			child-expand-y: find  to block! child/extra/expand  'vertical
 
 			resized?: no
-			if find vert-aligns child-align [
-				if child-expand-x [
-					append expand-x child
+			either child-detached [
+				if (child-expand-x) [
+					append detached/horizontal child
 					resized?: yes
 				]
-				either child-expand-y [
-					append/only expand-y-sum current-block-y
-					resized?: yes
-					current-block-y: copy []
-				] [
-					fixed: fixed + as-pair 0 child/size/y
-				]
-			]
-			if find horiz-aligns child-align [
-				if child-expand-y [
-					append expand-y child
+				if (child-expand-y) [
+					append detached/vertical child
 					resized?: yes
 				]
-				either child-expand-x [
-					append/only expand-x-sum current-block-x
-					resized?: yes
-					current-block-x: copy []
-				] [
-					fixed: fixed + as-pair child/size/x 0
+			] [
+				append current-block-x child
+				append current-block-y child
+
+				if find vert-aligns child-align [
+					if child-expand-x [
+						append expand-x child
+						resized?: yes
+					]
+					either child-expand-y [
+						append/only expand-y-sum current-block-y
+						resized?: yes
+						current-block-y: copy []
+					] [
+						fixed: fixed + as-pair 0 child/size/y
+					]
+				]
+				if find horiz-aligns child-align [
+					if child-expand-y [
+						append expand-y child
+						resized?: yes
+					]
+					either child-expand-x [
+						append/only expand-x-sum current-block-x
+						resized?: yes
+						current-block-x: copy []
+					] [
+						fixed: fixed + as-pair child/size/x 0
+					]
 				]
 			]
 
@@ -91,6 +108,9 @@ set 'resize-deep function [parent [object!]] [
 				append resized child
 			]
 		] [
+			append current-block-x child
+			append current-block-y child
+
 			if find vert-aligns child-align [
 				fixed: fixed + as-pair 0 child/size/y
 			]
@@ -146,6 +166,12 @@ set 'resize-deep function [parent [object!]] [
 				last-sum: this-sum
 			]
 			i: i + 1
+		]
+	]
+
+	foreach [dim expand] [x horizontal y vertical] [
+		foreach child detached/(expand) [
+			child/size/(dim): parent/size/(dim) - child/offset/(dim)
 		]
 	]
 
